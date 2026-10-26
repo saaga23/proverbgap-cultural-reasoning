@@ -3,6 +3,12 @@
 All notable changes to this repository are documented here.
 This project does not yet use semantic versioning; entries are dated.
 
+## [0.4.1] — 2026-10-26 (branch `docs/evidence-memo-2026-10-26`)
+
+### Changed
+- **README restructured as a first-reader entry point:** "At a glance" banner (what it is / what exists / what we learned / what's next / what's unresolved), "Start here" links, natural reading order (overview → question → what exists → findings → limitations → proposed method → proverb_mcq boundary → reproducibility → six-step roadmap → doc map); canonical provisional RQ adopted ("…automatic evaluation metrics align with blinded human judgments of meaning fidelity… vary by language and task"); Task A/B scope, no-pragmatic-claim boundary, and ≤$2 gated condition stated explicitly.
+- `docs/research/LITERATURE_AND_METHODOLOGY_AUDIT.md`: candidate RQ aligned to the canonical wording (construct definitions retained; pragmatic axis deferred to the gated condition).
+
 ## [0.4.0] — 2026-10-26 (branch `docs/evidence-memo-2026-10-26`)
 
 ### Added

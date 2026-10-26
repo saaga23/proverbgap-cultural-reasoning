@@ -32,8 +32,10 @@
 
 ## 3. Recommended research question and method
 
-**Candidate RQ (hypothesis to evaluate, not a conclusion):**
-> For source-cleared English, Arabic, and Yoruba proverb items, do existing evaluation approaches validly distinguish **meaning fidelity** (does the output state the proverb's intended meaning?) from **pragmatic appropriateness** (does it identify a correct context of use?), and how sensitive are their conclusions to language, contextual support, lexical shortcuts, contamination, and evaluator choice?
+**Candidate RQ (hypothesis to evaluate, not a conclusion — canonical wording, 2026-10-26):**
+> **Across English, Arabic, and Yoruba proverb-generation outputs, how well do automatic evaluation metrics align with blinded human judgments of meaning fidelity, and how does that alignment vary by language and task?**
+
+Construct definitions: **meaning fidelity** = does the output state the proverb's intended meaning; **pragmatic appropriateness** = does it identify a correct context of use. The verified Task A/B prompts are meaning-side only, so the primary outcome covers meaning fidelity; the pragmatic axis requires the separately gated usage-scenario condition (§5, gate 4) and is otherwise out of scope.
 
 **Direct comparison with prior work:** Kinayat establishes that *models* perform worse on pragmatic use than understanding (−14.07% in AR/EN) — it does not ask whether our *instruments* (BLEU/ChrF/embeddings/LLM-judges) can detect that difference validly, nor whether the instruments behave consistently in Yoruba. Fu & Liu show judges are inconsistent across languages (κ≈0.3) but on generic tasks. VIVID shows judge calibration is feasible (κ=0.792, one language). No verified work combines: tri-lingual items, both constructs, and an evaluator-validity audit. If a reviewer names such a paper, we narrow to the languages/constructs it omits (per the standing invitation for challenge).
 

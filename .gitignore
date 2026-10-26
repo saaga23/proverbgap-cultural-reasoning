@@ -12,7 +12,7 @@ secrets*.json
 *.tsv
 *.parquet
 *.jsonl
-data/
+/data/
 datasets/
 
 # --- OS / editor junk ---

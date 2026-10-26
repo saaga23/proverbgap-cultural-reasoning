@@ -12,7 +12,7 @@
 
 ## Start here
 
-Read this README first (about five minutes), then, in this order:
+Read this README first (about ten minutes now that it explains the design), then, in this order:
 
 1. [`docs/GETTING_STARTED_FOR_RESEARCHERS.md`](docs/GETTING_STARTED_FOR_RESEARCHERS.md) — the 8-step onboarding path.
 2. [`docs/research/LITERATURE_AND_METHODOLOGY_AUDIT.md`](docs/research/LITERATURE_AND_METHODOLOGY_AUDIT.md) — the current literature audit and proposed method.
@@ -28,23 +28,22 @@ A proverb like *"A friend in need is a friend indeed"* does not describe friends
 
 > **Can large language models understand the culturally grounded meanings of proverbs, rather than merely recognize their translations, familiar wording, or surface-level interpretations?**
 
-Each item was built from a **proverb record**: the original text, an English translation, and a cultural meaning/context. The original MCQ design created difficulty via two distractor strategies — **S1** (wrong options = meanings of other same-language proverbs) vs **S2** (wrong options = near-miss paraphrases written by a different model family).
+To test this, each proverb was stored as a **proverb record** with three parts: the original proverb, its English translation, and a **cultural meaning/context** — a sentence or two explaining what the proverb actually teaches and when it is used. That cultural explanation is the reference a model's answer is judged against.
 
-**Proposed research question (2026-10-26 — provisional, open to critique):**
+The original multiple-choice design created difficulty through two distractor strategies. (**Distractor** = one of the wrong options in a multiple-choice question.)
 
-> **Across English, Arabic, and Yoruba proverb-generation outputs, how well do automatic evaluation metrics align with blinded human judgments of meaning fidelity, and how does that alignment vary by language and task?**
+- **S1 (baseline):** the three wrong options are real meanings of *other proverbs from the same language*. They are clearly wrong once you know what the proverb means, so this mostly tests whether a model can reject obviously wrong text.
+- **S2 (adversarial):** the three wrong options are near-miss paraphrases of the correct meaning, written by a model from a *different* family than the ones being evaluated. Doing well here should require actually understanding the meaning, because the wrong options look plausible.
 
-The closest prior work already covers much of this ground: Kinayat (EACL 2026) measures how *models* handle understanding versus pragmatic use in Arabic and English, and Fu & Liu (EMNLP Findings 2025) show that multilingual LLM judges are internally inconsistent. What nobody in the verified literature appears to have done is turn the evaluation around: instead of scoring models, score the *metrics* — check whether BLEU, chrF, embedding similarity, or an LLM judge actually agree with blinded human judgments of meaning fidelity, and whether that agreement holds for Task A (literal-meaning explanations) the way it holds for Task B (culturally equivalent translations). That is a different question from "which model performs best," and it is not another proverb benchmark. Whether the gap is real remains to be confirmed: several related-work leads are still unverified, so this is a candidate contribution, not an established one.
+The idea was that the drop in accuracy from S1 to S2 would measure how much of a model's apparent proverb skill is real understanding. (More on why that reasoning ran into trouble in §3 and §4.)
 
-In practice this would mean: take the generation outputs we already have (no new model calls), have blinded raters judge how faithfully each one states the proverb's meaning, and measure how closely each automatic metric — BLEU, chrF, embedding similarity, possibly an LLM judge — matches those human judgments. Task A (literal-meaning explanations) and Task B (culturally equivalent translations) would be analyzed separately, since they were different prompts with different reference fields.
+**Why the direction is being reassessed.** Since 2024 the field has produced several close relatives of this idea: [MAPS](https://aclanthology.org/2024.naacl-long.112/) (NAACL 2024) evaluated proverb understanding across six languages; [Kinayat](https://aclanthology.org/2026.eacl-long.341/) (EACL 2026) measured the gap between *understanding* a figurative expression and *using it appropriately* in Arabic and English; [ADAGE](https://arxiv.org/abs/2607.23058) (2026) built translation-free proverb benchmarks curated by native speakers; and [Fu & Liu](https://aclanthology.org/2025.findings-emnlp.587/) (EMNLP Findings 2025) showed that LLM judges are inconsistent across languages. Building *another* proverb benchmark is therefore not obviously a contribution. The direction this repository now proposes (§5) instead asks a question about **evaluation itself** — whether the automatic scores people use actually track what humans think — which the verified literature does not yet answer.
 
-Two boundaries matter. First, the pilot prompts never asked about usage, so these outputs say nothing about *pragmatic appropriateness*; testing that would need a new usage-scenario generation run, proposed separately with its own small budget cap (≤$2). Second, the three languages use different proverbs and would use different rater pools, so comparisons across languages stay descriptive.
-
-Studying proverbs in African languages is not novel on its own, and we are not claiming it is. What would make this worth doing is the evaluator-validity angle, and that claim has to survive the related-work audit. If you know of work we have missed — or think this framing is wrong — we would rather hear it now than after the protocol is frozen.
+**A note on the other repository.** [`saaga23/proverb_mcq`](https://github.com/saaga23/proverb_mcq) is a separate project that grew out of this one: it studies whether *distractors* can be generated so that they resist shortcut answers (see §6). Its results are about distractor quality. They must not be read as evidence about whether any model understands proverbs.
 
 ## 2. What exists today
 
-**Data** (collected Mar–May 2026; preserved as the Kaggle dataset [`original-data`](https://www.kaggle.com/datasets/abrahamsunday123/original-data) and local copies in the source repository `saaga23/proverb_mcq`):
+**Data** (collected Mar–May 2026; preserved as the Kaggle dataset [`original-data`](https://www.kaggle.com/datasets/abrahamsunday123/original-data) and local copies in `saaga23/proverb_mcq`):
 
 | Language | Rows (verified) | Rights status |
 |---|---|---|
@@ -53,28 +52,29 @@ Studying proverbs in African languages is not novel on its own, and we are not c
 | Yoruba | 3,974 | source attribution **unresolved** (copyrighted book vs a tracked "Strict_EMNLP_Yoruba_Corpus" workbook) |
 | French/German/Spanish | on Kaggle (counts unverified) | outside current scope |
 
-Column-level schemas are documented in [`docs/data/DATA_DICTIONARY.md`](docs/data/DATA_DICTIONARY.md), and the record flow in [`docs/data/DATASET_LINEAGE.md`](docs/data/DATASET_LINEAGE.md). No raw data is distributed from this repository. One caveat worth knowing early: proverb data — including files that were later removed from the old repository — is still retrievable from its public Git history; we verified this in October 2026 ([`DATA_RIGHTS_AND_PROVENANCE.md`](DATA_RIGHTS_AND_PROVENANCE.md) §3.1).
+Each row in these files is one proverb record as described in §1. Column-level schemas are documented in [`docs/data/DATA_DICTIONARY.md`](docs/data/DATA_DICTIONARY.md), and the record flow in [`docs/data/DATASET_LINEAGE.md`](docs/data/DATASET_LINEAGE.md). No raw data is distributed from this repository. One caveat worth knowing early: proverb data — including files that were later removed from the old repository — is still retrievable from its public Git history; we verified this in October 2026 ([`DATA_RIGHTS_AND_PROVENANCE.md`](DATA_RIGHTS_AND_PROVENANCE.md) §3.1).
 
-**Experiments actually run:**
+**Experiments actually run.** Three task formats were piloted; "recovered outputs" below means the models' answer texts, downloaded back from Kaggle after the local copies were lost.
 
 | Format | Status |
 |---|---|
-| **MCQ** (pick the meaning, A–D) | ✅ May 2026 pilot (150 proverbs × 2 strategies → 300 questions); responses not preserved |
-| **Fill-in-the-blank** (complete a masked word) | ✅ 30-item Kaggle pilot (2026-05-19) — feasibility only; all 90 predictions used fallback extraction; real-context = sham-context EM |
-| **Generation** (explain / culturally translate) | ✅ Kaggle pilot (2026-05-19): 2,160 attempts, 90 proverbs × 6 models; **outputs recovered — the basis of the proposed audit** |
-| **Human validation** | 🛠️ Sampling + annotation app exist; **zero annotations collected** |
+| **MCQ** (multiple choice: pick the correct meaning from four options) | ✅ May 2026 pilot (150 proverbs × 2 strategies → 300 questions); model responses not preserved |
+| **FiB** (fill-in-the-blank: complete a word that was masked in the proverb) | ✅ 30-item Kaggle pilot (2026-05-19) — feasibility only; all 90 predictions used fallback extraction; real-context = sham-context exact match |
+| **Generation** (write an explanation or a cultural equivalent) | ✅ Kaggle pilot (2026-05-19): 2,160 attempts, 90 proverbs × 6 models; **outputs recovered — the basis of the proposed audit** |
+| **Human validation** | 🛠️ A 60-item sample and a working annotation web app exist; **zero annotations have been collected** |
 
-Also: a completed 180-question **shortcut-audit dataset** (v68, June 2026) — but it measures distractor quality, not cultural understanding (see §5).
+Also: a completed 180-question **shortcut-audit dataset** (v68, June 2026) — but it measures distractor quality, not cultural understanding (see §6).
 
-## 3. What we have learned — and the evidence behind each claim
+## 3. What we have learned — and what each result actually means
 
-| Claim | Evidence status |
-|---|---|
-| May pilot: S1 86.8% (651/750) vs S2-strict 62.5% (369/590) | ⚠️ **Historically verified, not reproducible** — checked on 2026-05-24 against files later overwritten; the reported "McNemar" test is **unresolved** (form/pairing undocumented; a two-proportion χ² on the same marginals gives 106.9) |
-| "S2 real-paraphrase accuracy 24.9% (below random)" | ⚠️ **Reported but unverified — and misattributed** to the pilot; it belongs to small N=50 runs and fits neither run's arithmetic |
-| v68 audit: committee accuracy 56.7% (102/180), HCW 27.8% (50/180) | ✅ **Reproduced** from raw audit data — measures *distractor quality*, **not** cultural understanding |
-| Generation pilot: 77.6% success across 6 models; gold-copying 3.7–11.2% | ✅ **Reproduced** from the recovered Kaggle output — task feasibility, not cultural understanding |
-| FiB/Generation at scale; N=700; human validation; FR/DE/ES | ❌ Never run |
+| What was tested | Result | What this means | Status |
+|---|---|---|---|
+| **May MCQ pilot** — can models pick the correct meaning when the wrong options are other proverbs' meanings (S1) versus near-miss paraphrases (S2)? | S1 86.8% (651/750) vs S2-strict 62.5% (369/590) | A large drop, consistent with S2 being harder — but it does not prove *why*, and the construct-validity concerns below were never resolved | ⚠️ Verified on 2026-05-24 against files that were later overwritten. The reported significance test ("McNemar") is unresolved: its pairing and exact form are undocumented; a two-proportion χ² on the same marginals gives 106.9 |
+| **The "24.9% real-paraphrase accuracy" claim** — an alarm that S2's correct-answer rate on genuinely paraphrased items was below the 25% random-guessing baseline | Does not fit the arithmetic of any run we can trace (mixing 24.9% with its companion numbers gives 30.9%, but the runs in question scored 35.6% and 36.9% overall) | The alarm belongs to small N=50 test runs, not to the pilot above — but it was never verified from raw data either way | ⚠️ Reported but unverified — and misattributed |
+| **v68 shortcut audit** — a blind committee of 4 models saw only the four answer options (no proverb text) and voted on the correct one; if most vote wrong, the distractors exploit a shortcut | Committee accuracy 56.7% (102/180); **HCW** ("high-consensus-wrong": ≥3 of 4 auditors agree on the *wrong* answer) 27.8% (50/180) | Distractors from that pipeline often trap a model that only sees the options. This says the *generation pipeline* has a problem — it says nothing about whether models understand proverbs | ✅ Recomputed from surviving raw data |
+| **Generation pilot** — six models wrote proverb explanations or cultural equivalents; automated scores were computed | 77.6% of 2,160 attempts succeeded; models copied the reference answer in 3.7–11.2% of cases ("gold-copying"); one model succeeded on only 34.7% | The task ran and its outputs are usable — this is a feasibility result, not a comprehension result | ✅ Recomputed from the recovered Kaggle output |
+| **FiB pilot** — models completed a word masked in the proverb, under real-proverb and sham-proverb conditions | Exact match ≈ 13%, and identical for real and sham proverbs | Word-completion may not tap cultural meaning at all; feasibility check only | ✅ Recomputed from the recovered Kaggle output |
+| Scale-ups (N=700), human validation, French/German/Spanish | — | Never run | ❌ |
 
 ## 4. Limitations and open problems
 
@@ -85,39 +85,110 @@ Also: a completed 180-question **shortcut-audit dataset** (v68, June 2026) — b
 - **Model success rates varied widely** (34.7%–96.9%), so missing outputs need a prespecified rule; and since the 90 items are different proverbs per language, cross-language contrasts can only be descriptive.
 - Full discrepancy record: [`docs/audit/EVIDENCE_DISCREPANCIES.md`](docs/audit/EVIDENCE_DISCREPANCIES.md).
 
-## 5. The proposed method (provisional)
+## 5. The proposed study, step by step (provisional)
 
-The pilot would only start after four gates: data rights sorted, the rating rubric frozen, raters recruited (target Fleiss κ ≥ 0.6), and the deterministic checks green.
+Nothing below has been approved or executed. The steps are in the order the work would actually happen, and each one can stop the project.
 
-The design uses two raters per language — six raters in total across English, Arabic, and Yoruba — and each rater judges only the language they are assigned. The sample comes from the recovered generations: 10–15 proverbs per language × 3–4 models × 2 tasks × 2 strategies.
+### Step 1 — Resolve permissions and confirm usable data
 
-- **Smaller pilot:** 10 × 3 × 2 × 2 = **120 outputs per language**, 360 across the three languages; with two raters per language, **720 rating events** in total. Each rater judges 120 outputs — roughly **3–4 hours** at 1.5–2 minutes per rating.
-- **Larger pilot:** 15 × 4 × 2 × 2 = **240 outputs per language**, 720 in total; **1,440 rating events**. Each rater judges 240 outputs — roughly **6–8 hours**.
+Human annotation and any release both require knowing where the data came from and whether it may be used. **English** was scraped from public collections, but the sources were never recorded, so the public-domain claim is unverified. **Arabic** comes from an academic dataset that has never been identified. **Yoruba** is attributed to a copyrighted book (Owomoyela 2005), but a tracked workbook named "Strict_EMNLP_Yoruba_Corpus" suggests an additional or alternative source — the true provenance is unknown. Yoruba is **not** being dropped: if its rights cannot be resolved, the study would run on English and Arabic and report Yoruba as blocked-by-rights, rather than quietly pretending the tri-lingual design is complete. The full disposition sheet is in [`DATA_RIGHTS_AND_PROVENANCE.md`](DATA_RIGHTS_AND_PROVENANCE.md) §3.2.
 
-These are planning estimates, not measured annotation times, and they assume every selected output is rateable. In practice the models' success rates varied widely (34.7%–96.9%), so failed generations must be excluded and the final sample drawn from actual successful outputs under a prespecified missing-data rule — the totals above are upper bounds, not guarantees.
+### Step 2 — Define exactly what is being evaluated
 
-The primary outcome is the agreement between human ratings and each automatic metric, computed per language and per task (BLEU, chrF, embedding similarity; an LLM judge only as a small ≤$2 add-on). Differences across languages would be reported as observations, not causal findings. Pragmatic appropriateness stays out of scope until the separately capped usage-scenario run is approved.
+Two constructs, in plain English:
 
-Full reasoning, the prior-work comparison, and the go/no-go gates are in [`docs/research/LITERATURE_AND_METHODOLOGY_AUDIT.md`](docs/research/LITERATURE_AND_METHODOLOGY_AUDIT.md).
+- **Meaning fidelity** — does a model's answer preserve the proverb's intended meaning?
+- **Pragmatic appropriateness** — does an answer identify a suitable situation in which the proverb would be used?
+
+The recovered generation tasks, as verified from the notebook code:
+
+- **Task A:** the model explains the proverb's **literal meaning** in 1–2 sentences, given the proverb and its English translation. The translation is the recorded reference.
+- **Task B:** the model provides a **culturally equivalent English translation or idiom**, given the proverb and its translation. The recorded cultural context is the reference.
+- **Strategies:** these are two *prompting conditions applied to the same items* — not separate datasets. `zs` is zero-shot prompting: the model receives the task instruction and answers directly. `cot_en` is a chain-of-thought condition: the model is asked to reason step by step in English first, wrap that reasoning in tags, and give a final answer; the tagged reasoning is stripped before the answer is scored.
+
+Both tasks are about meaning; neither prompt asks for usage scenarios. The existing outputs therefore **cannot establish pragmatic appropriateness**. The primary study analyzes the existing generations and requires no new inference; a usage-scenario generation run is a separate, optional extension that would need explicit approval and a maximum budget of $2.
+
+### Step 3 — Which models, and how they would be chosen
+
+The recovered pilot already contains generations from **six existing instruction-tuned models** run through APIs (no new training involved): LLaMA-3.1-8B, LLaMA-3.3-70B, Qwen3-32B, Gemma-4-31B, LLaMA-4-Maverick, and Nemotron-120B. The proposed audit would rate a **subset of 3–4 of these six** — not six newly selected models.
+
+Selection is **not yet decided**, and the criteria in ordinary language are: the model must handle English, Arabic, and Yoruba plausibly; it must have enough *successful* outputs to support the comparison (Qwen3-32B succeeded on only 34.7% of attempts); its exact checkpoint and licence must be documented; and the set should form a consistent multilingual baseline rather than a mixed bag. The methodology audit discusses Arabic-centric models (ALLaM-7B, Fanar-1-9B) and African-focused models (AfriqueQwen-14B; N-ATLaS, InkubaLM, YorubaLlama as unverified leads) only as *possible future additions* — appearing in the pilot does not automatically make a model a suitable multilingual baseline, and no model is selected by name alone. Final selection is a decision to make after examining language coverage and successful-row counts.
+
+### Step 4 — What would be sampled, and how big the annotation effort is
+
+The plan is to select **10–15 proverb items per language, 3–4 selected models, both tasks, and both strategies**. The cross-product of those choices gives the *maximum planned sample*, if every selected output exists and succeeded:
+
+- Smaller design: 10 proverbs × 3 models × 2 tasks × 2 strategies = **120 outputs per language**, or **360 across the three languages**.
+- Larger design: 15 × 4 × 2 × 2 = **240 outputs per language**, or **720 overall**.
+
+These are **generated answers to be rated** — not 360–720 unique proverbs. There are three language-specific sets of proverb items; the recovered data contains no parallel (shared/translated) items across languages. Only successful generations can be rated and success rates were uneven, so the final selection must be drawn from real successful outputs under a predeclared missing-output rule; the intended sample and the achieved sample would be reported separately.
+
+With **two raters per language — six raters in total** — and each rater judging only their assigned language:
+
+- Smaller design: 360 outputs × 2 ratings = **720 rating events**; each rater rates 120 outputs, ≈ **3–4 hours** at 1.5–2 minutes per rating.
+- Larger design: 720 outputs × 2 ratings = **1,440 rating events**; each rater rates 240 outputs, ≈ **6–8 hours**.
+
+These are planning estimates, not measured annotation times. Adding a third rater per language would be a different design with proportionally more work (1.5× the rating events) and is not part of this baseline.
+
+### Step 5 — What the human raters would actually do
+
+1. Raters receive written instructions and a rubric for judging whether an output preserves the proverb's intended meaning.
+2. Judgments are **blinded**: raters see the output (and whatever reference the task design specifies) but not which model produced it, so brand familiarity cannot influence them.
+3. Two competent raters independently assess every selected output.
+4. Agreement between raters is recorded (Fleiss' kappa is one standard way to summarize agreement among multiple raters; **κ ≥ 0.6 is a proposed target, not a result already obtained and not a universal guarantee of good annotation**), disagreements are resolved by a prespecified adjudication procedure, and the records are kept auditable.
+5. The rubric is piloted on a small batch before any scale-up.
+
+The annotation web app in the old repository is *code that exists* — it does not mean annotations have been collected, and none have.
+
+### Step 6 — How the automatic metrics get evaluated
+
+This is the heart of the proposal. The automatic metrics have **already produced scores** for the recovered generations — but a score is not self-validating. The study asks whether those scores actually track what trained human raters say.
+
+The metrics, briefly:
+
+- **BLEU** — counts overlapping word sequences between a candidate answer and its reference.
+- **chrF** — counts overlapping character sequences, which can catch partial spelling and word-form matches.
+- **Embedding similarity** — compares numeric vector representations of the candidate and reference texts to estimate semantic closeness.
+
+The comparison would work like this:
+
+1. Score the selected answers with the specified metrics using reproducible scripts.
+2. Compare each metric's scores against the blinded human meaning-fidelity ratings.
+3. Run the comparison **separately for Task A and Task B**, because their prompts and reference fields differ.
+4. Report agreement/correlation with uncertainty intervals, under a prespecified analysis plan that accounts for many outputs coming from the same proverb.
+5. Examine whether the metric rankings differ within each language.
+
+BLEU, chrF, and embedding similarity are **not** treated as ground truth — the human ratings are the anchor, though their own reliability must be checked first (Step 5). An LLM judge is **not automatically part of the core study**: the recovered notebook contains a judge prompt, but the recovered output file contains no saved judge scores, so any judging run would be a new, separately approved step capped at **$2** and calibrated against the human ratings. (That judging run is distinct from the usage-scenario generation extension in Step 2, which has its own proposed $2 cap.)
+
+### Step 7 — What could and could not be concluded
+
+- The study evaluates **metric validity** against human meaning-fidelity judgments on a sample of generation outputs. It does not measure general model intelligence or cultural competence.
+- Task A vs Task B differences would be meaningful but descriptive: the prompts and reference types differ.
+- Cross-language differences are descriptive only — different proverbs and separate rater pools mean the design cannot establish that a language *causes* better or worse agreement.
+- Nothing in the existing outputs supports conclusions about pragmatic appropriateness or contextual use.
+- The study is provisional and proceeds only if the rights, sampling, annotation, and analysis gates are all satisfied.
+
+If it works, the result would be a statement of the form: *these automatic metrics track human judgments of proverb-meaning fidelity reliably; these do not; here is where the limits are.* That is useful and publishable — and it is not a declaration that any model understands a culture.
 
 ## 6. Relationship to `proverb_mcq` (separate track)
 
-After the original track stalled, the work pivoted to distractor **shortcut resistance** — that track (v68 dataset, failure taxonomy, EACL 2027 draft) lives in [`saaga23/proverb_mcq`](https://github.com/saaga23/proverb_mcq). It is methodologically useful (generation code, filters, annotation app) but does **not** answer the cultural-understanding question, and its results are not evidence about cultural competence here. See [`docs/research/ORIGINAL_VS_SHORTCUT_RESEARCH.md`](docs/research/ORIGINAL_VS_SHORTCUT_RESEARCH.md).
+After the original track stalled, the work pivoted to distractor **shortcut resistance** — that track (the v68 dataset, its failure taxonomy, and an EACL 2027 paper draft) lives in [`saaga23/proverb_mcq`](https://github.com/saaga23/proverb_mcq). The two projects answer different questions: proverb_mcq asks "can we build distractors that don't give the answer away?"; ProverbGap asks "do models understand what proverbs mean?". A distractor set can be shortcut-resistant without anyone understanding anything, so proverb_mcq's results — however solid — are not evidence about cultural understanding. The audit app and generation code built there are reusable here. See [`docs/research/ORIGINAL_VS_SHORTCUT_RESEARCH.md`](docs/research/ORIGINAL_VS_SHORTCUT_RESEARCH.md).
 
 ## 7. Data and reproducibility notes
 
-- **Deterministic, no-cost recheck** of every reproduced number: `python docs/decisions/supporting/recompute_checks.py --old-repo <proverb_mcq path>` (details: [`docs/decisions/supporting/RESULTS.md`](docs/decisions/supporting/RESULTS.md)).
-- Recovered Kaggle pilot outputs are re-downloadable with `python -m kaggle kernels output …` (commands in RESULTS.md). The May pilot's raw responses are **not recoverable locally** — only a Kaggle web-UI version export could restore them.
-- Historical context: [`docs/reconstruction/03_CHRONOLOGICAL_RESEARCH_TIMELINE.md`](docs/reconstruction/03_CHRONOLOGICAL_RESEARCH_TIMELINE.md) and the full register: [`docs/experiments/EXPERIMENT_REGISTER.md`](docs/experiments/EXPERIMENT_REGISTER.md).
+- **What can be recomputed from surviving files** (deterministically, at no cost): the v68 audit metrics, the June-run failure counts, and the recovered FiB/Generation descriptives — `python docs/decisions/supporting/recompute_checks.py --old-repo <proverb_mcq path>` (details: [`docs/decisions/supporting/RESULTS.md`](docs/decisions/supporting/RESULTS.md)).
+- **What cannot:** the May MCQ pilot's model responses (overwritten; only a Kaggle web-UI version export could restore them) and the LLM-judge scores (never saved).
+- **What is re-downloadable:** the FiB and Generation pilot outputs, via `python -m kaggle kernels output …` (commands in RESULTS.md).
+- Historical context: [`docs/reconstruction/03_CHRONOLOGICAL_RESEARCH_TIMELINE.md`](docs/reconstruction/03_CHRONOLOGICAL_RESEARCH_TIMELINE.md); full register: [`docs/experiments/EXPERIMENT_REGISTER.md`](docs/experiments/EXPERIMENT_REGISTER.md).
 
 ## 8. Next steps (all pending owner decisions — nothing has started)
 
-The Phase 1 reconstruction, the evidence audit, and the October 2026 literature audit are complete. Everything in this list is still to do — no new experiments have been run.
+The Phase 1 reconstruction, the evidence audit, and the October 2026 literature audit are complete. Everything in this list is still to do — no new experiments have been run. The order matters: each step depends on the one before it.
 
 1. **Complete the literature/novelty decision** — confirm or narrow the provisional research question ([audit](docs/research/LITERATURE_AND_METHODOLOGY_AUDIT.md)).
-2. **Resolve source provenance and permissible use** for Yoruba, Arabic, and English (disposition sheet: [`DATA_RIGHTS_AND_PROVENANCE.md`](DATA_RIGHTS_AND_PROVENANCE.md) §3.2) — this gates everything downstream.
-3. **Finalize construct definitions, human rubric, and preregistered analysis** (meaning fidelity first; pragmatic axis only via the gated ≤$2 condition).
-4. **Complete deterministic reproducibility and evaluator-validity checks** (no-cost).
+2. **Resolve source provenance and permissible use** for Yoruba, Arabic, and English (disposition sheet: [`DATA_RIGHTS_AND_PROVENANCE.md`](DATA_RIGHTS_AND_PROVENANCE.md) §3.2) — this gates annotation and any release.
+3. **Finalize construct definitions, the human rubric, and the preregistered analysis** (meaning fidelity first; pragmatic axis only via the gated ≤$2 usage-scenario condition).
+4. **Complete deterministic reproducibility and evaluator-validity checks** (no-cost), and select the 3–4 models from the recovered pilot.
 5. **Run the small, blinded human-anchored pilot** only once gates 1–4 pass, under a written budget cap.
 6. **Scale and prepare a paper** only if the evidence supports the contribution.
 

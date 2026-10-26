@@ -3,6 +3,15 @@
 All notable changes to this repository are documented here.
 This project does not yet use semantic versioning; entries are dated.
 
+## [0.3.1] — 2026-10-26 (branch `docs/evidence-memo-2026-10-26`)
+
+### Verified (release-risk milestone; old repo inspected read-only, nothing changed)
+- Public retrievability proven end-to-end: HEAD proverb CSV and the historical `_unzipped/mcq_a_zs_yoruba.csv` blob (commit `198253b`, removed at `3450d98`, still in `main`'s ancestry) both return HTTP 200 unauthenticated.
+- 142 tracked CSVs categorized (~90 item-level proverb content/keys; 18 `paper/tables` aggregates).
+- `.env.local`: local-only (ignored, 0 commits; no DSN in history; `supabase.co` refs at HEAD are public client URLs) — rotation downgraded to routine hygiene.
+- Old-repo licensing claims (`DATASET_CARD.md`) verified accurate; residual MIT-file ambiguity noted with a recommended one-line README clarifier (owner-approved edit required).
+- `DATA_RIGHTS_AND_PROVENANCE.md` §3.1 now records the verified exposure facts; README rights note updated.
+
 ## [0.3.0] — 2026-10-26 (branch `docs/evidence-memo-2026-10-26`)
 
 ### Added

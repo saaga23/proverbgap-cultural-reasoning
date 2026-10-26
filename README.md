@@ -33,7 +33,7 @@ Collected March–May 2026 and preserved as the Kaggle dataset [`original-data`]
 
 Every column of every dataset is documented in **[`docs/data/DATA_DICTIONARY.md`](docs/data/DATA_DICTIONARY.md)**; how records flow through the pipeline is in **[`docs/data/DATASET_LINEAGE.md`](docs/data/DATASET_LINEAGE.md)**.
 
-⚠️ **Rights:** Yoruba text comes from a copyrighted book; the Arabic source is unidentified; English scraping sources were not recorded. **No raw data is distributed here.** See [`DATA_RIGHTS_AND_PROVENANCE.md`](DATA_RIGHTS_AND_PROVENANCE.md).
+⚠️ **Rights:** Yoruba text comes from a copyrighted book; the Arabic source is unidentified; English scraping sources were not recorded. **No raw data is distributed here.** Note: proverb data in the source repository — including files removed from its working tree — remains retrievable from that repository's public Git history (verified 2026-10-26); see [`DATA_RIGHTS_AND_PROVENANCE.md`](DATA_RIGHTS_AND_PROVENANCE.md) §3.1.
 
 ## 5. Evaluation formats — planned vs actually run
 

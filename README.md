@@ -1,6 +1,8 @@
 # ProverbGap: Do language models understand what proverbs *mean*?
 
 > **Status: reconstructed research foundation — awaiting Phase 2 review.** No new experiments have been run in this repository. Historical numbers below come with explicit caveats; see [What has actually been established](#7-the-findings-and-what-they-actually-show).
+>
+> **New here?** Read sections 1–9 below in order, then [`docs/GETTING_STARTED_FOR_RESEARCHERS.md`](docs/GETTING_STARTED_FOR_RESEARCHERS.md). For the evidence-backed recommendation on what to run next, see [`docs/decisions/PROVERBGAP_EVIDENCE_RECOVERY_AND_NEXT_EXPERIMENT.md`](docs/decisions/PROVERBGAP_EVIDENCE_RECOVERY_AND_NEXT_EXPERIMENT.md).
 
 ## 1. The problem
 
@@ -38,8 +40,8 @@ Every column of every dataset is documented in **[`docs/data/DATA_DICTIONARY.md`
 | Format | What the model does | Historical status |
 |---|---|---|
 | **MCQ** | Pick the correct meaning (A–D) | ✅ Run (May 2026 pilot, N=150 proverbs → 300 questions) |
-| **Fill-in-the-blank** | Complete a word masked in the proverb | ✅ 30-item pilot ran on Kaggle (May 19, 2026); never scaled |
-| **Generation/explanation** | Explain the proverb's meaning | ✅ Pilot ran on Kaggle (May 19, 2026; 2,160 attempts); analysis never completed |
+| **Fill-in-the-blank** | Complete a word masked in the proverb | ✅ 30-item pilot ran on Kaggle (May 19, 2026); never scaled. All 90 answers were extracted via a fallback parser, and real-context vs sham-problem performance was identical — **feasibility only, no cultural signal at this size** |
+| **Generation/explanation** | Explain the proverb's meaning | ✅ Pilot ran on Kaggle (May 19, 2026; 2,160 attempts over 90 proverbs × 6 models); outputs recovered and analyzed (77.6% success; gold-copying 3.7–11.2% per model) — but no scoring rubric or human reference exists yet |
 | **Human validation** | Native speakers review items | 🛠️ Sampling + a full annotation web app exist; **zero annotations collected** |
 
 ## 6. The experiments
@@ -58,9 +60,10 @@ The full, verified register is in **[`docs/experiments/EXPERIMENT_REGISTER.md`](
 
 | Claim | Evidence status |
 |---|---|
-| S1 86.8% (651/750) vs S2 strict 62.5% (369/590), McNemar p<0.001 — a difficulty gap | ✅ Verified on 2026-05-24 against the run's files; ❌ **those files were later overwritten** — the figures now rest on contemporaneous verification reports, not raw data |
-| S2's real-paraphrase items scored **24.9%** (below the 25% random baseline), suggesting construct-validity problems | ⚠️ **Narrative-only claim** — no surviving artifact computes it; unresolved |
+| S1 86.8% (651/750) vs S2 strict 62.5% (369/590) — a difficulty gap | ✅ Verified on 2026-05-24 against the run's files; ❌ **those files were later overwritten** — the figures rest on contemporaneous verification reports, not raw data. The paired significance test ("McNemar") is **unresolved**: its exact form and pairing are undocumented (a two-proportion χ² on the same marginals gives 106.9 — plausible but not the reported 131.3) |
+| "S2 real-paraphrase accuracy **24.9%** (below random) — construct-validity failure" | ⚠️ **Reported but unverified — and misattributed.** It belongs to the small N=50 runs of late May (where the companion figures are at least arithmetically coherent: 30.0%→35.6% overall; 31.5%→36.9%), **not** to the N=150 pilot. The 24.9% figure fits neither run's arithmetic. The pilot's strict S2 was 62.5% — far above chance |
 | v68 shortcut audit: committee accuracy 56.7% (102/180), perfect consensus 41.7%, **HCW 27.8%** (50/180) — corpus fallback distractors often trap the committee | ✅ **Independently reproduced** from raw audit data (2026-10-26) — but this measures *distractor quality*, **not** cultural understanding |
+| Generation pilot (May 19): 77.6% success across 6 models; gold-copying 3.7–11.2%; Qwen3-32B succeeded on only 34.7% of attempts | ✅ **Reproduced** from the recovered Kaggle output — describes task feasibility, not yet cultural understanding |
 | FiB/Generation at scale; N=700; human validation; FR/DE/ES | ❌ Never run |
 
 ## 8. Failures and limitations (why the project paused)
@@ -82,7 +85,9 @@ After the original track stalled, the work pivoted to a **separate, verifiable q
 **Done:** Phase 1 reconstruction (22 documents), this evidence audit (data dictionary, lineage, experiment register, Kaggle crosswalk, discrepancy register, newcomer audit).
 **Not done:** everything in Phase 2 — literature review, methodology selection, new experiments, human validation, publication.
 
-**Next decisions (owner):** which task format to revive first; keep/replace S2; resolve data rights; approve budget; choose venue. Start at **[`docs/GETTING_STARTED_FOR_RESEARCHERS.md`](docs/GETTING_STARTED_FOR_RESEARCHERS.md)**.
+**Recommended next experiment (evidence-backed, pending owner approval):** a small pre-registered **Generation-first pilot** — explain the cultural meaning with a translation-only control condition, human-reviewed — with the fixed FiB design as fallback. Full reasoning, the comparison table, and ten go/no-go validity gates: [`docs/decisions/PROVERBGAP_EVIDENCE_RECOVERY_AND_NEXT_EXPERIMENT.md`](docs/decisions/PROVERBGAP_EVIDENCE_RECOVERY_AND_NEXT_EXPERIMENT.md).
+
+**Next decisions (owner):** approve/adjust that recommendation; recover the May 23 kernel version from Kaggle; resolve data rights; approve budget; choose venue. Start at **[`docs/GETTING_STARTED_FOR_RESEARCHERS.md`](docs/GETTING_STARTED_FOR_RESEARCHERS.md)**.
 
 ## Repository map
 

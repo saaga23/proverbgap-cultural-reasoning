@@ -13,6 +13,7 @@ All artifact paths are in the source repository `saaga23/proverb_mcq`. Dates are
 | ID | Experiment | Window | Status | Best evidence level |
 |---|---|---|---|---|
 | DATA-COLLECT | Proverb data collection & cleaning | Mar–May 2026 | COMPLETED-WITH-OUTPUTS (6 languages) | 1 |
+| ER-A1 | April-era MCQ generation runs (large batches) | Apr–May 2026 (first committed 2026-05-16) | COMPLETED-WITH-OUTPUTS (recovered from Git history 2026-10-26) | 1 |
 | MCQ-PILOT | v4.3.4 N=150 S1/S2 pilot (May) | 2026-05-23 | COMPLETED-WITH-OUTPUTS; **primary artifacts since overwritten** — figures verified at the time (level 5), not locally reproducible now | 5 |
 | MCQ-PILOT-CHECK | Paper verification suite (3 reports) | 2026-05-24 | COMPLETED-WITH-OUTPUTS | 5 |
 | FIB-PILOT | Fill-in-the-blank 30-item pilot | 2026-05-19 (Kaggle, COMPLETE) | COMPLETED-WITH-OUTPUTS (recovered) | 1 |
@@ -45,6 +46,7 @@ All artifact paths are in the source repository `saaga23/proverb_mcq`. Dates are
 - **Execution:** COMPLETED (May 23). **Verification at the time (May 24, `docs/verification_cross.md`, level 5):** S1 86.8% = **651/750**; S2 strict 62.5% = **369/590**; S2 fallback 32/150 = 21.3%; per-language S1 97.6/92.8/70.0, S2 strict 71.3/65.5/46.2 (EN/AR/YO); per-model S1 92.7 (maverick) / 82.9 (allam); McNemar χ²=131.3 p<0.001; encoders 29–36%.
 - **What S1/S2 asked the model:** given proverb + question + 4 English meaning options, choose the correct meaning letter. S1's wrong options are other proverbs' meanings; S2's are LLM paraphrases with subtle shifts.
 - **Current reproducibility:** **NOT locally reproducible** — `kaggle_analysis/Last_run/` now holds June-run files; `FINAL_AUDIT_v434.md`, `memory.md`, `original_data/`, `GENERATION_QUALITY_REPORT.md` are absent from the working tree. The May kernel's *latest* version re-run (May 21) failed at startup (no keys/missing dataset); the successful May 23 run is an earlier Kaggle kernel version not exposed by the CLI (needs web-UI version export). Status: **COMPLETED-WITH-OUTPUTS (historically verified), RESULTS-NOT-REPRODUCIBLE-LOCALLY**.
+- **Audit update (2026-10-26):** the old repository's Git history was mined as a recovery route — the May evaluation/encoder files were **never committed** (only the June failed run, first committed 2026-06-15), so Git recovery is impossible; the Kaggle web-UI version export remains the only path. The McNemar claim (χ²=131.3, p<0.001) could not be reconstructed: the paired contingency table, the matched subset behind the differing denominators (750 vs 590), and the test variant are undocumented. A two-proportion χ² on the verified marginals gives 106.9 — plausible but not the reported statistic (see decision memo §A3). The "24.9% real-paraphrase" claim is **misattributed** to this pilot: it belongs to the N=50-era Run 22/23 and is internally inconsistent (memo §A4).
 - **Validity concerns:** (a) the **S2 construct-validity dispute** — the June 15 history doc and memory export report a June 4 audit finding that S2's 62.5% mixes *real-paraphrase items (24.9%, below the 25% random baseline)* with high-scoring placeholder-fallback items; **no surviving artifact computes 24.9%** — the claim traces only to narrative docs (level 6) → `UNRESOLVED`; (b) cross-verification found the paper's consensus table mislabeled "any unanimous" as "unanimous correct" (true S2 unanimous-wrong = 22.7%); (c) abstract conflated earlier-iteration failures with the pilot.
 - **Influence:** the construct-validity + scaling concerns fed the May 18 thesis invalidation and the June pivot to distractor-quality auditing.
 
@@ -59,6 +61,7 @@ Three reports in old-repo `docs/`: `verification_paper.md`, `verification_mentor
 - **Execution:** COMPLETED-WITH-OUTPUTS. **Analysis:** none found (no summary/figures).
 - **Significance:** proves the FiB format was actually implemented and run — the Phase 1 dossier's "planned only" framing was **wrong** (it followed the stale May draft). The "16,439 rows" memory figure is unverified; the surviving pilot is 30 items.
 - **Influence:** set aside after May 18 thesis invalidation; remains the most direct format for testing cultural recall.
+- **Audit update (2026-10-26):** notebook source pulled from Kaggle and inspected. The three conditions are: **A** = original proverb context, **B** = paraphrased context, **C** = *sham-proverb control* (a genuine design strength). Recomputed descriptives: all 90 predictions extracted via last-line fallback (`FALLBACK_LINE` — a parser weakness, not a run failure); mean EM A 0.133 / B 0.100 / **C 0.133** — real-context and sham-context performance identical at this scale. The pilot therefore establishes **feasibility only**, with no cultural signal at n=30; a future run should fix extraction and pre-register "A ≫ C" as the validity signal. (Decision memo §B1.)
 
 ## 5. GEN-PILOT — generation/explanation pilot (2026-05-19, Kaggle kernel `proverbgap-generation`, status COMPLETE)
 
@@ -67,6 +70,7 @@ Three reports in old-repo `docs/`: `verification_paper.md`, `verification_mentor
 - **Status:** COMPLETED-WITH-OUTPUTS; **ANALYSIS-MISSING** (no aggregate table/figures found).
 - **Known claim:** memory export asserts "DeepSeek-R1 100% gold-copying" and "25,190 clean Task A rows" — neither verified against this artifact (row count here = 2,160). See D-6.
 - **Influence:** supported the May 18 invalidation narrative (models copying gold explanations instead of explaining), but the quantitative basis is currently unverifiable → recompute from `pilot_results.csv` in Phase 2 if the question is revived.
+- **Audit update (2026-10-26):** recomputed from the recovered artifact (`supporting/recompute_checks.py`): 2,160 attempts = **90 unique proverbs (30/language) × 6 models × 2 tasks × 2 strategies**; SUCCESS 1,677/2,160 (77.6%); the 483 failures match `retry_queue.jsonl` (queued, never executed). Per-model success: Gemma-4-31B 96.9%, Nemotron-120B 96.4%, Maverick 93.6%, LLaMA-3.3-70B 72.5%, LLaMA-3.1-8B 71.7%, **Qwen3-32B 34.7%**. **Gold-copying among successes = 3.7–11.2% per model** (max: LLaMA-3.1-8B 11.2%). The memory claims "DeepSeek-R1 100% gold copying" (model absent from the run) and "25,190 clean Task A rows" (2,160 here) are **Contradicted** — see D-18. Status upgraded to: primary evidence recovered **and descriptively analyzed**; conclusions about cultural reasoning still require a scoring rubric and human validation. (Decision memo §B2.)
 
 ## 6. MCQ-JUNE-RUN — June Kaggle Groq re-run (2026-06-08/09)
 
@@ -134,3 +138,27 @@ Three reports in old-repo `docs/`: `verification_paper.md`, `verification_mentor
 | Fleiss κ / Cohen κ (IAA-PROXY) | standard multi-rater / pairwise agreement corrections | IAA-PROXY |
 
 **Do not cross-use:** e.g., v68 HCW says nothing about whether models understand cultural meaning; the May S1/S2 gap is about option difficulty, not distractor-quality auditing.
+
+---
+
+## 15. ER-A1 — April-era MCQ generation runs (2026-04; first committed 2026-05-16, later removed from working tree)
+
+- **What:** large MCQ generation batches predating the May pilot — `_unzipped/mcq_a_{zs,cot,cot_xl}_{language}.csv` recovered from the repository's first commit (`198253b`): **2,000 Yoruba** and **803 Arabic** rows × 22 columns (options, answer key, `raw_response`, and per-item quality scores `parse`, `complete`, `len_r`, `distinct`, `quality`), plus `_all_mcq_analysis.txt` with per-language descriptive statistics. Six languages appear in the file set (FR/DE/ES included).
+- **Status:** COMPLETED-WITH-OUTPUTS (generation + quality scoring); these are *generated MCQs with item-quality metrics*, not model-accuracy results.
+- **Significance for the research question:** `cultural_context_available = False` throughout — the earliest items were built from translations **without cultural-context fields**, i.e., before the cultural-meaning representation existed. This makes ER-A1 the earliest documented state of the benchmark concept and a useful baseline for measuring how the item design evolved.
+- **Evidence quality:** schema and counts **Verified** (files read from Git history); generation code for this era not yet located — provenance of the quality metrics **Inferred**.
+- **Caveat:** these files contain proverb texts and meanings and remain in the **public** repository's Git history — flagged as a redistribution-rights exposure in `DATA_RIGHTS_AND_PROVENANCE.md` §3.
+
+## 16. Claims reclassification (audit of 2026-10-26)
+
+Consolidated status changes following the evidence-recovery audit (full reasoning in `docs/decisions/PROVERBGAP_EVIDENCE_RECOVERY_AND_NEXT_EXPERIMENT.md`):
+
+| Claim | Old status | New status | Basis |
+|---|---|---|---|
+| S1 86.8% / S2-strict 62.5%, McNemar p<0.001 (May pilot) | Historically verified, not currently reproducible | Unchanged; McNemar sub-claim now **explicitly unresolved** (test form/pairing undocumented; two-prop χ² = 106.9 is a plausibility check only) | Memo §A3 |
+| "S2 real-paraphrase accuracy 24.9% (below random)" | Reported but unverified (misattributed to the pilot) | **Misattributed + internally inconsistent** — belongs to N=50-era Run 22/23 (30.0%/31.5%, which *are* arithmetically coherent); pilot's strict S2 = 62.5% | Memo §A4; D-17 |
+| "DeepSeek-R1 100% gold copying" | Reported but unverified | **Contradicted** (model absent; max observed 11.2%) | D-18 |
+| "16,439 FiB rows" / "25,190 generation rows" | Reported but unverified | **Unsupported by any located artifact** (recovered: 30 items / 2,160 attempts) | D-18, D-19 |
+| FiB pilot | COMPLETED-WITH-OUTPUTS | COMPLETED-WITH-OUTPUTS **and descriptively analyzed** — feasibility only; A≈C at n=30 | Memo §B1 |
+| Generation pilot | COMPLETED-ANALYSIS-MISSING | Primary evidence recovered **and descriptively analyzed** (success/gold-copy per model) | Memo §B2 |
+| April-era MCQ runs | undocumented | ER-A1 added (COMPLETED-WITH-OUTPUTS, Git-history recovery) | D-20 |

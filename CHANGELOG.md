@@ -3,6 +3,22 @@
 All notable changes to this repository are documented here.
 This project does not yet use semantic versioning; entries are dated.
 
+## [0.3.0] — 2026-10-26 (branch `docs/evidence-memo-2026-10-26`)
+
+### Added
+- **Decision memo** `docs/decisions/PROVERBGAP_EVIDENCE_RECOVERY_AND_NEXT_EXPERIMENT.md` — evidence recovery and next-experiment recommendation, with ten go/no-go validity gates.
+- **Supporting calculations** `docs/decisions/supporting/` (`recompute_checks.py`, `RESULTS.md`) — reproducible recomputation of the June failed run, v68 metrics, the 24.9% decomposition check, and FiB/Generation pilot descriptives.
+- Git-history mining (old repo): recovered full `memory.md`, `GENERATION_QUALITY_REPORT.md`, `audit_behavior_report.md`; proved the May v4.3.4 eval data was never committed; discovered the April-era 2,000-item MCQ batches (registered as ER-A1).
+- Kaggle notebook sources pulled (code only) for the FiB and Generation kernels; output descriptives recomputed.
+
+### Corrected (dated audit updates; historical records preserved, not rewritten)
+- **24.9% claim:** misattributed to the N=150 pilot — belongs to the N=50-era Run 22/23 and is internally inconsistent (D-17). Pilot's strict S2 = 62.5%.
+- **"DeepSeek-R1 100% gold copying" and "25,190 generation rows":** contradicted by the recovered artifact (D-18).
+- **"16,439 FiB rows":** unsupported; recovered pilot = 30 items; all predictions used last-line fallback extraction; real-context ≈ sham-context (D-19).
+- **McNemar claim:** explicitly marked unresolved (test form/pairing undocumented; two-prop χ² = 106.9 as plausibility check only).
+- **April-era MCQ runs:** added to register and data dictionary (D-20); flagged as a public-history redistribution exposure.
+- Release audit: no live secrets in either repository's Git history (verified); three rights questions (citation ≠ redistribution ≠ code licence) now separated in `DATA_RIGHTS_AND_PROVENANCE.md` §4.
+
 ## [0.2.0] — 2026-10-26
 
 ### Added

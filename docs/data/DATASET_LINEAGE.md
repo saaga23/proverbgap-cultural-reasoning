@@ -66,10 +66,14 @@ Solid arrows = verified flow. Dotted arrows = documented transitions (decision, 
 - v68: consensus accuracy 102/180 = 56.7%; perfect consensus 75/180; HCW 50/180 (recomputed directly from `pilot1_test_audit_results.csv` on 2026-10-26 — **independently reproduced**).
 - v68 analysis layer: `kaggle/run_logs/v68/table_*.csv` (18 tables) and `paper/tables/` mirrors.
 
+### Stage 0 — April-era MCQ batches (recovered 2026-10-26, Git history)
+Before the May pilot, large MCQ batches were generated directly from the cleaned data (2,000 Yoruba / 803 Arabic items with item-quality scores; six languages in the file set). `cultural_context_available = False` throughout — these items pre-date the cultural-meaning schema. Schema: `DATA_DICTIONARY.md` §6; register: ER-A1.
+
 ### Stage 5 — Other formats (FiB, Generation) (`verified` as small pilots; `planned` at scale)
 - FiB: proverb → cloze (`displayed_proverb` masks `gold_word`) → 3 conditions (gold word / paraphrase / sham proverb) → EM/NEM/ChrF per condition. 30-item pilot on Kaggle (COMPLETE). **No scale-up artifact found.**
 - Generation: proverb + gold explanation → model explanation → BLEU/ChrF/semantic similarity + `contains_gold` copying detector. 2,160 attempts on Kaggle (COMPLETE). No aggregated analysis table found.
 - Both were **set aside after the May 18 thesis invalidation**; they are the natural Phase 2 formats for the cultural-reasoning question.
+- **Audit update (2026-10-26):** both pilots' outputs were recovered from Kaggle and descriptively analyzed — FiB: feasibility only (all 90 predictions used last-line extraction; real-context EM = sham-context EM = 0.133); Generation: 77.6% success across 6 models, gold-copying 3.7–11.2%, Qwen3-32B succeeded on only 34.7% of attempts. Neither establishes cultural understanding (decision memo §B).
 
 ### Stage 6 — Human validation (`planned` end-to-end)
 - Sampling done: 60-item stratified sample + 30-item v68 sample (**verified**, both unfilled).

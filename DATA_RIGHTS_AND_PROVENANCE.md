@@ -30,6 +30,8 @@
 
 **Copied here:** the 22 Phase 1 reconstruction/planning documents only (markdown; no data). See `docs/repository_transfer/TRANSFER_MANIFEST.md`.
 
+**Additional exposure discovered 2026-10-26 (old repository, public):** the April-era MCQ batches `_unzipped/mcq_a_*.csv` (proverb texts + meanings, incl. 2,000 Yoruba and 803 Arabic items) were added in the first commit and later removed from the working tree — but they **remain recoverable from the public Git history**. Removal from HEAD does not remove history. Also: the OpenRouter key is transported via a **private** Kaggle dataset (`openrouter-key-mcq`) whose metadata declares a `CC0-1.0` licence — a labelling inconsistency on a credentials artifact (the dataset itself is private; keep it that way and consider renaming). Full audit: `docs/decisions/PROVERBGAP_EVIDENCE_RECOVERY_AND_NEXT_EXPERIMENT.md` §C.
+
 **Deliberately not copied (locations recorded, contents not duplicated):**
 
 | Artifact group | Old-repo location | Reason |
@@ -45,6 +47,12 @@
 
 ## 4. Licence position
 
+Three distinct questions must not be conflated (per the 2026-10-26 release audit):
+
+1. **Bibliographic citation** — citing Owomoyela (2005) or any published collection as a *source* is ordinary scholarship and does not by itself require permission from a publisher or university.
+2. **Reproduction/redistribution** — citing a source does **not** establish permission to redistribute copied proverb texts, cultural explanations, substantial extracts, or derived datasets. That is the open question for Yoruba (copyrighted book), Arabic (source unidentified), and English (scraping undocumented).
+3. **Code vs data licensing** — the old repository's MIT licence covers **code** only; it does not extend to datasets. This repository currently carries **no licence file** pending owner approval, and no dataset release.
+
 - **No licence file is included in this repository.** A blanket MIT/CC BY licence is **not** applied without a justified scope and owner approval.
 - The old repository's **code** is MIT-licensed; that statement does **not** extend to its datasets, and nothing here represents the historical data as cleared for redistribution.
-- Until items 1–4 above are resolved by the owner, the correct posture is: **private repository, documentation only, no data release.**
+- Until items 1–4 above are resolved by the owner, the correct posture is: **public repository, documentation only, no data release** — public visibility of these documents does not assert that any underlying dataset is cleared for redistribution.

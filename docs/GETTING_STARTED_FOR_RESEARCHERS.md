@@ -23,9 +23,9 @@ Where every artifact lives, what was executed, what was recovered from Kaggle, a
 The 16 open owner decisions and the material contradictions (e.g., Yoruba row counts, the 24.9% claim, v70's date, the 7,172-vs-7,488 arithmetic). **You should now know:** what is genuinely unknown versus merely unwritten.
 
 ## Step 7 — What has and has not been validated
-- **Independently reproduced (trust):** all v68 metrics (recomputed from `pilot1_test_audit_results.csv`).
-- **Verified at the time, primary data since overwritten (trust with care):** May pilot S1 86.8% (651/750), S2 strict 62.5% (369/590).
-- **Narrative-only claims (do not cite as findings):** the 24.9% real-paraphrase figure; 16,439 FiB rows; 25,190 generation rows; "June 4 audit" contents.
+- **Independently reproduced (trust):** all v68 metrics (recomputed from `pilot1_test_audit_results.csv`); the FiB and Generation pilot descriptives (recomputed 2026-10-26 from recovered Kaggle outputs — see `docs/decisions/supporting/RESULTS.md`).
+- **Verified at the time, primary data since overwritten (trust with care):** May pilot S1 86.8% (651/750), S2 strict 62.5% (369/590). The McNemar significance claim is **explicitly unresolved** (test form/pairing undocumented).
+- **Narrative-only or corrected claims:** the "24.9% real-paraphrase" figure is **misattributed** — it belongs to the small N=50 runs and is internally inconsistent (decision memo §A4); "16,439 FiB rows" and "25,190 generation rows" are unsupported; "DeepSeek-R1 100% gold copying" is contradicted (max observed 11.2%).
 - **Never executed:** v69; human validation; N=700 scale-up; FR/DE/ES benchmarking.
 
 ## Step 8 — Before running anything, discuss with the team

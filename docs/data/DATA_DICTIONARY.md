@@ -160,7 +160,9 @@ Next.js 16 + React 19 + Supabase (Postgres/RLS) + Playwright E2E tests; deployed
 | `sham_proverb` | A sham-proverb condition |
 | `pred_a/status_a/em_a/nem_a/chrf_a/latency_a` (+ `_b`, `_c`) | Three conditions (a/b/c): model prediction, status, Exact Match, Normalized EM, ChrF score, latency |
 
-So the FiB task = word-level cloze on the proverb text, scored with EM/NEM/ChrF across three conditions. **This is a 30-item pilot, not the 16,439-row dataset** quoted in the Phase 1 memory export (unverified figure — see discrepancies D-6).
+So the FiB task = word-level cloze on the proverb text, scored with EM/NEM/ChrF across three conditions. **This is a 30-item pilot, not the 16,439-row dataset** quoted in the Phase 1 memory export (unverified figure — see discrepancies D-6, now D-19).
+
+**Audit note (2026-10-26):** `FALLBACK_LINE` (the value in every `status_*` column) is an **answer-extraction fallback** — the parser fell back to taking the model's last line because the structured answer format was absent; it does **not** mean generation failed. Conditions: A = original context, B = paraphrased context, C = sham-proverb control. Recomputed means: EM 0.133 / 0.100 / 0.133 (A/B/C) — real-context and sham-context performance are identical at this scale (decision memo §B1).
 
 ### 5.2 Generation pilot — `pilot_outputs/pilot_results.csv` (kernel `proverbgap-generation`, status COMPLETE) — **2,160 rows** × 23 cols (unit: one model's generated explanation attempt)
 | Column | Meaning |
@@ -181,7 +183,26 @@ So the FiB task = word-level cloze on the proverb text, scored with EM/NEM/ChrF 
 
 ---
 
-## 6. Explicit unknowns (do not guess)
+## 6. April-era MCQ generation batches (Git history only — first commit `198253b`, 2026-05-16)
+
+Recovered during the 2026-10-26 evidence audit; **not present in the current working tree** (removed after early May; still in public Git history).
+
+### `_unzipped/mcq_a_{zs,cot,cot_xl}_{language}.csv` — e.g., 2,000 Yoruba rows, 803 Arabic rows × 22 cols (unit: generated MCQ item with quality metrics)
+| Column | Meaning | Type | Role |
+|---|---|---|---|
+| `task`, `strategy`, `language`, `sample_id` | Batch/task identifiers (e.g., `a`, `zs`, `YOR0001`) | string/enum | metadata |
+| `source_proverb` / `proverb_en` | Proverb and its English rendering | string | input |
+| `correct_meaning` | Gold meaning used as the correct option | string | gold label |
+| `cultural_context_available` | Whether a cultural-context field was present | bool | metadata — **False throughout** (pre-dates the cultural-context schema) |
+| `Choice_A..Choice_D`, `Answer` | Options and key | string/enum | generated + gold |
+| `distractor_1..3` | The three distractor texts (same as the non-key options) | string | generated |
+| `raw_response` | Generator's raw output (includes candidate lists) | string | raw output |
+| `parse`, `complete` | Whether output parsed / all fields present | float 0–1 | quality |
+| `len_r`, `distinct`, `quality` | Length ratio, option distinctness, composite quality score | float | quality metrics |
+
+Also recovered: `_all_mcq_analysis.txt` (per-language descriptive statistics) and `_mcq_nb_dump.txt` (notebook dump). Generation code for this era **not located** — metric provenance is **Inferred**. Six languages appear in the file set; FR/DE/ES row counts not yet counted.
+
+## 7. Explicit unknowns (do not guess)
 
 1. FR/DE/ES CSV schemas and row counts (Kaggle `original-data`).
 2. Values/categories of `Provenance`, `QA_Flag` in Yoruba_cleaned.csv.

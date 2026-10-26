@@ -34,6 +34,8 @@ Each item was built from a **proverb record**: the original text, an English tra
 
 > **Across English, Arabic, and Yoruba proverb-generation outputs, how well do automatic evaluation metrics align with blinded human judgments of meaning fidelity, and how does that alignment vary by language and task?**
 
+The closest prior work already covers much of this ground: Kinayat (EACL 2026) measures how *models* handle understanding versus pragmatic use in Arabic and English, and Fu & Liu (EMNLP Findings 2025) show that multilingual LLM judges are internally inconsistent. What nobody in the verified literature appears to have done is turn the evaluation around: instead of scoring models, score the *metrics* — check whether BLEU, chrF, embedding similarity, or an LLM judge actually agree with blinded human judgments of meaning fidelity, and whether that agreement holds for Task A (literal-meaning explanations) the way it holds for Task B (culturally equivalent translations). That is a different question from "which model performs best," and it is not another proverb benchmark. Whether the gap is real remains to be confirmed: several related-work leads are still unverified, so this is a candidate contribution, not an established one.
+
 In practice this would mean: take the generation outputs we already have (no new model calls), have blinded raters judge how faithfully each one states the proverb's meaning, and measure how closely each automatic metric — BLEU, chrF, embedding similarity, possibly an LLM judge — matches those human judgments. Task A (literal-meaning explanations) and Task B (culturally equivalent translations) would be analyzed separately, since they were different prompts with different reference fields.
 
 Two boundaries matter. First, the pilot prompts never asked about usage, so these outputs say nothing about *pragmatic appropriateness*; testing that would need a new usage-scenario generation run, proposed separately with its own small budget cap (≤$2). Second, the three languages use different proverbs and would use different rater pools, so comparisons across languages stay descriptive.
@@ -87,9 +89,14 @@ Also: a completed 180-question **shortcut-audit dataset** (v68, June 2026) — b
 
 The pilot would only start after four gates: data rights sorted, the rating rubric frozen, raters recruited (target Fleiss κ ≥ 0.6), and the deterministic checks green.
 
-Two raters per language would judge how faithfully each output states the proverb's meaning, on a stratified slice of the recovered generations — 10–15 proverbs per language × 3–4 models × 2 tasks × 2 strategies, roughly 360–720 outputs in total. With two raters that is 720–1,440 individual ratings, or about 9–24 hours of work per rater.
+The design uses two raters per language — six raters in total across English, Arabic, and Yoruba — and each rater judges only the language they are assigned. The sample comes from the recovered generations: 10–15 proverbs per language × 3–4 models × 2 tasks × 2 strategies.
 
-The primary outcome is the agreement between those human ratings and each automatic metric, computed per language and per task (BLEU, chrF, embedding similarity; an LLM judge only as a small ≤$2 add-on). Differences across languages would be reported as observations, not causal findings. Pragmatic appropriateness stays out of scope until the separately capped usage-scenario run is approved.
+- **Smaller pilot:** 10 × 3 × 2 × 2 = **120 outputs per language**, 360 across the three languages; with two raters per language, **720 rating events** in total. Each rater judges 120 outputs — roughly **3–4 hours** at 1.5–2 minutes per rating.
+- **Larger pilot:** 15 × 4 × 2 × 2 = **240 outputs per language**, 720 in total; **1,440 rating events**. Each rater judges 240 outputs — roughly **6–8 hours**.
+
+These are planning estimates, not measured annotation times, and they assume every selected output is rateable. In practice the models' success rates varied widely (34.7%–96.9%), so failed generations must be excluded and the final sample drawn from actual successful outputs under a prespecified missing-data rule — the totals above are upper bounds, not guarantees.
+
+The primary outcome is the agreement between human ratings and each automatic metric, computed per language and per task (BLEU, chrF, embedding similarity; an LLM judge only as a small ≤$2 add-on). Differences across languages would be reported as observations, not causal findings. Pragmatic appropriateness stays out of scope until the separately capped usage-scenario run is approved.
 
 Full reasoning, the prior-work comparison, and the go/no-go gates are in [`docs/research/LITERATURE_AND_METHODOLOGY_AUDIT.md`](docs/research/LITERATURE_AND_METHODOLOGY_AUDIT.md).
 

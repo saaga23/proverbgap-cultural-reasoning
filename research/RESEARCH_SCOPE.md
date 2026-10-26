@@ -1,5 +1,7 @@
 # Research Scope — Original ProverbGap Cultural-Reasoning Programme
 
+> **Direction reassessment (2026-10-26):** the Phase 2 literature audit (`docs/research/LITERATURE_AND_METHODOLOGY_AUDIT.md`) found broad proverb-benchmark and model-comparison framings largely covered by prior work. The project is provisionally considering a **validity and construct-separation study** (English, Arabic, Yoruba) instead. The eight directions below remain the *historical* original programme; statuses are unchanged. This note does not alter any historical record.
+
 **Status labels used throughout:** `IMPLEMENTED` (evidence that it ran), `PARTIAL` (some evidence, incomplete or contested), `PLANNED` (documented intention, never executed), `UNKNOWN` (reported but unverifiable from surviving artifacts).
 
 **Primary evidence:** the Phase 1 reconstruction dossier in [`docs/reconstruction/`](../docs/reconstruction/). This file summarizes the original programme; it does **not** report new results.
@@ -24,13 +26,13 @@ The original benchmark design represents each proverb with three fields — orig
 
 ### 2. Model performance on cultural meaning vs translation alone — `PARTIAL` (contested)
 - Two-strategy design (S1 in-domain negative sampling = translation/discrimination floor; S2 cross-family LLM paraphrase = meaning-level adversarial task). N=150 pilot: S1 86.8% vs S2 62.5%, McNemar p<0.001 (`02_` §5).
-- **Contested:** the June 4 audit found S2's 62.5% mixes real paraphrases (24.9% — below the 25% random baseline) with high-scoring placeholder fallbacks; S2 construct validity was never resolved (`docs/reconstruction/05_EVALUATION_METHODS_RECONSTRUCTION.md` §2).
+- **Contested (corrected 2026-10-26):** a June 2026 construct-validity concern exists, but the "24.9% real-paraphrase accuracy" figure was **misattributed** — it belongs to the small N=50-era runs (Run 22/23) and is internally inconsistent; the N=150 pilot's strict S2 was 62.5% (369/590). The reported McNemar test is **unresolved** (test form/pairing undocumented). See `docs/decisions/PROVERBGAP_EVIDENCE_RECOVERY_AND_NEXT_EXPERIMENT.md` §A3–A4 and `docs/audit/EVIDENCE_DISCREPANCIES.md` D-17.
 - Treat the difficulty-gap claim as **unproven until re-validated**.
 
 ### 3. Multiple evaluation formats (MCQ, fill-in-the-blank, sentence completion, generation) — `PARTIAL`
 - **MCQ:** `IMPLEMENTED` (May pilot, 300 MCQs / 1,500 API evaluations).
-- **Fill-in-the-blank:** `PLANNED` in the May draft (§7.3, future tense). A later exploration reportedly produced 16,439 rows before the May 18 thesis invalidation, but no artifacts were located in the repository (`docs/reconstruction/04_EXPERIMENT_REGISTER.md`, `06_` §4) — treat as `UNKNOWN/unverified`.
-- **Generation / explanation:** `PLANNED` (§7.4). Same status as FiB (reported 25,190-row exploration; artifacts not located).
+- **Fill-in-the-blank:** `IMPLEMENTED` as a 30-item, three-condition Kaggle pilot (2026-05-19; outputs recovered 2026-10-26 — feasibility only: all predictions used fallback extraction; real-context ≈ sham-context EM). Scale-up never run; the "16,439 rows" figure is unsupported (D-19).
+- **Generation / explanation:** `IMPLEMENTED` as a Kaggle pilot (2026-05-19; 2,160 attempts over 90 proverbs × 6 models; recovered and descriptively analyzed — 77.6% success, gold-copying 3.7–11.2%). No scoring rubric or human reference exists; the "25,190 rows" figure is unsupported (D-18).
 - **Sentence completion:** never separately documented; treat as `PLANNED` (not evidenced).
 
 ### 4. Prompting conditions (zero-shot / one-shot / few-shot) — `PARTIAL`

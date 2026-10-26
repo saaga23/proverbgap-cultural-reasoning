@@ -3,6 +3,16 @@
 All notable changes to this repository are documented here.
 This project does not yet use semantic versioning; entries are dated.
 
+## [0.4.0] — 2026-10-26 (branch `docs/evidence-memo-2026-10-26`)
+
+### Added
+- **Phase 2 literature & methodology audit** — `docs/research/LITERATURE_AND_METHODOLOGY_AUDIT.md`: 13 verified prior works (ACL Anthology / arXiv primary sources), novelty-gap analysis, proposed construct-separation research question (meaning fidelity vs pragmatic appropriateness; English/Arabic/Yoruba), method sketch on recovered artifacts, model shortlist with verified evidence, and go/no-go gates. Search limitations recorded (Semantic Scholar HTTP 429; CulturalProbe/IlùBench unverified — not treated as evidence of absence).
+- README §10 "Why we are reassessing the research direction" (with reviewer-challenge invitation) + six-step roadmap (§11).
+- Yoruba rights wording corrected: source attribution marked **unresolved** (tracked `Strict_EMNLP_Yoruba_Corpus` workbook).
+
+### Changed
+- `research/RESEARCH_SCOPE.md`: dated direction-reassessment note; historical statuses unchanged.
+
 ## [0.3.1] — 2026-10-26 (branch `docs/evidence-memo-2026-10-26`)
 
 ### Verified (release-risk milestone; old repo inspected read-only, nothing changed)

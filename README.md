@@ -33,7 +33,7 @@ Collected March–May 2026 and preserved as the Kaggle dataset [`original-data`]
 
 Every column of every dataset is documented in **[`docs/data/DATA_DICTIONARY.md`](docs/data/DATA_DICTIONARY.md)**; how records flow through the pipeline is in **[`docs/data/DATASET_LINEAGE.md`](docs/data/DATASET_LINEAGE.md)**.
 
-⚠️ **Rights:** Yoruba text comes from a copyrighted book; the Arabic source is unidentified; English scraping sources were not recorded. **No raw data is distributed here.** Note: proverb data in the source repository — including files removed from its working tree — remains retrievable from that repository's public Git history (verified 2026-10-26); see [`DATA_RIGHTS_AND_PROVENANCE.md`](DATA_RIGHTS_AND_PROVENANCE.md) §3.1.
+⚠️ **Rights:** Yoruba text is *attributed* to a copyrighted book (Owomoyela 2005), but a tracked workbook named "Strict_EMNLP_Yoruba_Corpus" makes the exact source **unresolved**; the Arabic source is unidentified; English scraping sources were not recorded. **No raw data is distributed here.** Note: proverb data in the source repository — including files removed from its working tree — remains retrievable from that repository's public Git history (verified 2026-10-26); see [`DATA_RIGHTS_AND_PROVENANCE.md`](DATA_RIGHTS_AND_PROVENANCE.md) §3.1.
 
 ## 5. Evaluation formats — planned vs actually run
 
@@ -80,14 +80,22 @@ Details: [`docs/audit/EVIDENCE_DISCREPANCIES.md`](docs/audit/EVIDENCE_DISCREPANC
 
 After the original track stalled, the work pivoted to a **separate, verifiable question** — "how do we generate distractors that resist shortcuts?" — which lives in [`saaga23/proverb_mcq`](https://github.com/saaga23/proverb_mcq) (v68 dataset, failure taxonomy, EACL 2027 paper draft). That track is **methodologically useful** (generation code, filters, annotation app) but does **not** answer the cultural-understanding question, and its results are not treated as evidence about cultural competence here. See [`docs/research/ORIGINAL_VS_SHORTCUT_RESEARCH.md`](docs/research/ORIGINAL_VS_SHORTCUT_RESEARCH.md).
 
-## 10. Current status and next steps
+## 10. Why we are reassessing the research direction
 
-**Done:** Phase 1 reconstruction (22 documents), this evidence audit (data dictionary, lineage, experiment register, Kaggle crosswalk, discrepancy register, newcomer audit).
-**Not done:** everything in Phase 2 — literature review, methodology selection, new experiments, human validation, publication.
+The field has moved since this project's first experiments: multicultural proverb reasoning was evaluated in [MAPS](https://aclanthology.org/2024.naacl-long.112/) (NAACL 2024); the **understanding-vs-pragmatic-use** distinction was already measured for models in Arabic and English in [Beyond Understanding / Kinayat](https://aclanthology.org/2026.eacl-long.341/) (EACL 2026); [ADAGE](https://arxiv.org/abs/2607.23058) (2026) built translation-free, native-speaker-curated proverb benchmarks; [Afri-MCQA](https://aclanthology.org/2026.acl-long.1869/) (ACL 2026) created native-speaker-built African cultural QA with linguistic-competence controls; and [Fu & Liu](https://aclanthology.org/2025.findings-emnlp.587/) (EMNLP Findings 2025) showed multilingual LLM judges are inconsistent (Fleiss κ ≈ 0.3). The original broad claims are therefore no longer sufficient novelty — and our historical results cannot yet establish cultural understanding (unresolved validity, reproducibility, annotation, provenance). We are provisionally considering a **validity and construct-separation study** across **English, Arabic, and Yoruba**: whether existing evaluation approaches distinguish *meaning fidelity* from *pragmatic appropriateness*, and how sensitive conclusions are to language, context, shortcuts, contamination, and evaluator choice. **This is a proposed direction, not a finalized methodology** — the full comparison is in [`docs/research/LITERATURE_AND_METHODOLOGY_AUDIT.md`](docs/research/LITERATURE_AND_METHODOLOGY_AUDIT.md). Researchers and reviewers are explicitly invited to challenge the claimed novelty, the three-language scope, the construct definitions, annotation feasibility, and the design before the protocol is frozen.
 
-**Recommended next experiment (evidence-backed, pending owner approval):** a small pre-registered **Generation-first pilot** — explain the cultural meaning with a translation-only control condition, human-reviewed — with the fixed FiB design as fallback. Full reasoning, the comparison table, and ten go/no-go validity gates: [`docs/decisions/PROVERBGAP_EVIDENCE_RECOVERY_AND_NEXT_EXPERIMENT.md`](docs/decisions/PROVERBGAP_EVIDENCE_RECOVERY_AND_NEXT_EXPERIMENT.md).
+## 11. Current status and next steps
 
-**Next decisions (owner):** approve/adjust that recommendation; recover the May 23 kernel version from Kaggle; resolve data rights; approve budget; choose venue. Start at **[`docs/GETTING_STARTED_FOR_RESEARCHERS.md`](docs/GETTING_STARTED_FOR_RESEARCHERS.md)**.
+**Done:** Phase 1 reconstruction; evidence audit; literature audit (Oct 2026). **Not done:** everything below — no new experiments have been run.
+
+1. **Complete the literature/novelty decision** — review [`docs/research/LITERATURE_AND_METHODOLOGY_AUDIT.md`](docs/research/LITERATURE_AND_METHODOLOGY_AUDIT.md) and confirm or narrow the proposed research question.
+2. **Resolve source provenance and permissible use** for Yoruba, Arabic, and English (Yoruba source attribution is unresolved — see [`DATA_RIGHTS_AND_PROVENANCE.md`](DATA_RIGHTS_AND_PROVENANCE.md) §3.2 disposition sheet) — this gates everything downstream.
+3. **Finalize the construct definitions, human rubric, and preregistered analysis** (meaning fidelity vs pragmatic appropriateness; annotator protocol; agreement targets).
+4. **Complete deterministic reproducibility and evaluator-validity checks** (no-cost; e.g., `docs/decisions/supporting/recompute_checks.py`).
+5. **Run a small, controlled human-anchored pilot** only once gates 1–4 pass, with a written budget cap.
+6. **Scale and prepare a paper** only if the evidence supports the contribution.
+
+Newcomers: start at [`docs/GETTING_STARTED_FOR_RESEARCHERS.md`](docs/GETTING_STARTED_FOR_RESEARCHERS.md).
 
 ## Repository map
 

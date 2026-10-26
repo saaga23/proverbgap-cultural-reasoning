@@ -3,6 +3,33 @@
 All notable changes to this repository are documented here.
 This project does not yet use semantic versioning; entries are dated.
 
+## [0.2.0] — 2026-10-26
+
+### Added
+- **Evidence audit pass** (local + Kaggle, read-only): recovered the May 19, 2026
+  fill-in-the-blank (30 items) and generation (2,160 attempts) Kaggle pilot outputs;
+  verified all v68 metrics from primary data; determined that the surviving
+  `evaluation_results.csv` is the June failed run, not the May pilot; located the
+  May 24 verification reports; inventoried 19 notebooks with execution metadata;
+  mapped Kaggle kernels/datasets (`original-data` 6-language set; `mcq-pass-shortcut`
+  kernel; private key dataset flagged).
+- `docs/data/DATA_DICTIONARY.md` — column-level documentation for every dataset.
+- `docs/data/DATASET_LINEAGE.md` — record-flow diagram with evidence labels.
+- `docs/experiments/EXPERIMENT_REGISTER.md` — 13 experiments with explicit statuses,
+  verified numerators/denominators, and metric definitions.
+- `docs/experiments/LOCAL_AND_KAGGLE_ARTIFACT_CROSSWALK.md` — local↔Kaggle artifact map.
+- `docs/research/ORIGINAL_VS_SHORTCUT_RESEARCH.md` — track separation and reusable elements.
+- `docs/audit/EVIDENCE_DISCREPANCIES.md` — 16 documented discrepancies (D-1…D-16).
+- `docs/newcomer_audit/NEWCOMER_COMPREHENSION_AUDIT.md` — 20 comprehension issues, fix status.
+- `docs/GLOSSARY.md`, `docs/GETTING_STARTED_FOR_RESEARCHERS.md`.
+- Root `README.md` rewritten to the 10-section newcomer flow.
+- Repository made **public** after release checks (no secrets, no data artifacts).
+
+### Corrected (historical evidence — recorded, not rewritten)
+- Phase 1's "FiB/Generation planned only" and "v70 halted June 26" and the
+  `evaluation_results.csv` misattribution are superseded by artifact evidence;
+  corrections live in the discrepancy register with pointers to the original claims.
+
 ## [0.1.0] — 2026-10-26
 
 ### Added

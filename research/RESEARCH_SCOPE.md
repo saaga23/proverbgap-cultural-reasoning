@@ -10,7 +10,7 @@
 
 > **Can large language models understand the culturally grounded meanings of proverbs, rather than merely recognize their translations, familiar wording, or surface-level interpretations?**
 
-The original benchmark design represents each proverb with three fields — original text, English translation, and a cultural explanation (usage/significance) — and evaluates models on *meaning*, not on reproducing proverb wording. Evidence: `02_ORIGINAL_RESEARCH_RECONSTRUCTION.md` §1–3.
+The original benchmark design represents each proverb with three fields — original text, English translation, and a cultural explanation (usage/significance) — and evaluates models on *meaning*, not on reproducing proverb wording. Evidence: `docs/reconstruction/02_ORIGINAL_RESEARCH_RECONSTRUCTION.md` §1–3.
 
 ---
 
@@ -19,17 +19,17 @@ The original benchmark design represents each proverb with three fields — orig
 ### 1. Representation of proverbs, translations, meanings, interpretations, contexts — `PARTIAL`
 - Schema implemented: proverb + English translation + cultural explanation; MSA (fus-ha) for Arabic; tonal marks preserved for Yoruba where available (`02_` §3).
 - Collection: 7,172 proverbs across six languages; three benchmarked (EN 2,278 / AR 913 / YO 3,931); FR (161) / DE (142) / ES (63) collected but excluded for insufficient sample size.
-- Known data-quality defects: Arabic gold-meaning errors (≥4% of a 50-item sample), English meanings sometimes containing the proverb text itself (shortcut leak). See `06_DATASET_PROVENANCE_AND_LINEAGE.md` §6.
+- Known data-quality defects: Arabic gold-meaning errors (≥4% of a 50-item sample), English meanings sometimes containing the proverb text itself (shortcut leak). See `docs/reconstruction/06_DATASET_PROVENANCE_AND_LINEAGE.md` §6.
 - **Open:** no finalized representation standard for interpretations/contextual explanations beyond the three-field schema.
 
 ### 2. Model performance on cultural meaning vs translation alone — `PARTIAL` (contested)
 - Two-strategy design (S1 in-domain negative sampling = translation/discrimination floor; S2 cross-family LLM paraphrase = meaning-level adversarial task). N=150 pilot: S1 86.8% vs S2 62.5%, McNemar p<0.001 (`02_` §5).
-- **Contested:** the June 4 audit found S2's 62.5% mixes real paraphrases (24.9% — below the 25% random baseline) with high-scoring placeholder fallbacks; S2 construct validity was never resolved (`05_EVALUATION_METHODS_RECONSTRUCTION.md` §2).
+- **Contested:** the June 4 audit found S2's 62.5% mixes real paraphrases (24.9% — below the 25% random baseline) with high-scoring placeholder fallbacks; S2 construct validity was never resolved (`docs/reconstruction/05_EVALUATION_METHODS_RECONSTRUCTION.md` §2).
 - Treat the difficulty-gap claim as **unproven until re-validated**.
 
 ### 3. Multiple evaluation formats (MCQ, fill-in-the-blank, sentence completion, generation) — `PARTIAL`
 - **MCQ:** `IMPLEMENTED` (May pilot, 300 MCQs / 1,500 API evaluations).
-- **Fill-in-the-blank:** `PLANNED` in the May draft (§7.3, future tense). A later exploration reportedly produced 16,439 rows before the May 18 thesis invalidation, but no artifacts were located in the repository (`04_EXPERIMENT_REGISTER.md`, `06_` §4) — treat as `UNKNOWN/unverified`.
+- **Fill-in-the-blank:** `PLANNED` in the May draft (§7.3, future tense). A later exploration reportedly produced 16,439 rows before the May 18 thesis invalidation, but no artifacts were located in the repository (`docs/reconstruction/04_EXPERIMENT_REGISTER.md`, `06_` §4) — treat as `UNKNOWN/unverified`.
 - **Generation / explanation:** `PLANNED` (§7.4). Same status as FiB (reported 25,190-row exploration; artifacts not located).
 - **Sentence completion:** never separately documented; treat as `PLANNED` (not evidenced).
 
@@ -38,7 +38,7 @@ The original benchmark design represents each proverb with three fields — orig
 - **One-shot** specifically is not documented in the evidence; do not claim it was run.
 
 ### 5. Comparisons across models, parameter sizes, families, open vs closed — `PARTIAL`
-- Evidence exists for: a 2-model API committee (llama-4-maverick 17B vs allam-2-7b 7B), a 4-encoder zero-shot baseline sweep (mBERT / XLM-R / AraBERT / AfriBERTa), same-family exploitation (detected and fixed by switching generators), and per-model accuracy/error splits (`02_` §5.3, §5.5; `07_MODEL_AND_EVALUATION_HISTORY.md`).
+- Evidence exists for: a 2-model API committee (llama-4-maverick 17B vs allam-2-7b 7B), a 4-encoder zero-shot baseline sweep (mBERT / XLM-R / AraBERT / AfriBERTa), same-family exploitation (detected and fixed by switching generators), and per-model accuracy/error splits (`02_` §5.3, §5.5; `docs/reconstruction/07_MODEL_AND_EVALUATION_HISTORY.md`).
 - A systematic size/family/open-vs-closed grid was **never run**; do not present committee comparisons as a controlled model-family study.
 
 ### 6. Role of task format, prompting strategy, language, cultural context — `PARTIAL`
